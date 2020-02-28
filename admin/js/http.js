@@ -1,5 +1,5 @@
 /* 沙箱模式 */
-(function(w){
+/* (function(w){
     var baseURL = 'http://localhost:8080/api/v1'
     var BigNew = {
         baseURL:baseURL,//基地址
@@ -25,4 +25,55 @@
 
     //暴露接口
     w.BigNew = BigNew;
-})(window);
+})(window); */
+
+
+(function (w) {
+	$.ajaxSetup({
+		// 每次登陆需要token,来辨别身份--全局封装token 方便调用
+		headers: {
+			// token被本地存储中 直接获取
+			Authorization: localStorage.getItem('token')
+		},
+
+		// 获取数据前
+		beforeSend: function () {
+			// 加载数据前显示进度条
+			if (window.NProgress) {
+				NProgress.start();
+			}
+		},
+
+		// 获取数据失败
+		error: function () {
+			$('.modal').modal();
+			$('.modal-body p').html('获取数据出现错误!重新登陆')
+		},
+
+		// 获取数据不管成功还失败
+		complete: function(){
+			if (window.NProgress) {
+				NProgress.done();
+			}
+		},
+	})
+
+	// 当点击登录进行跳转
+	$('.to-login').click(function () {
+		// e.preventDefault();
+		location.href = './login.html'
+	});
+
+
+	// 封装网址
+	// 基地址
+	const baseUrl = 'http://localhost:8080/api/v1';
+	const urls = {
+		user_info:	`${baseUrl}/admin/user/info`,						//	用户信息
+		user_detail:	`${baseUrl}/admin/user/detail`,				//	用户详情
+	}
+	w.urls = urls;
+})(window)
+
+
+

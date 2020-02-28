@@ -15,7 +15,8 @@ $(function(){
     const pas = $('.input_pass').val().trim();
     // 3、内容非空判断
     if(user === ''|| pas === ''){
-      alert('小兄弟,你飘了');
+      $('.modal').modal();
+      $('.modal-body p').html('兄弟,你飘了账号/密码都不写')
     }else{
       // 4、非空时发送ajax
       $.ajax({
@@ -31,10 +32,21 @@ $(function(){
         // dataType: "JSON",
         success: function (response) {
           console.log(response);
-          
+          // 判断登录成功  存储token
+          if (response.code === 200 ) {
+            // 成功存储token
+            localStorage.setItem('token',response.token);
+            // 成功跳转首页
+            location.href = './index.html';
+          } else{
+          // 如果登录不成功  
+            // 调用 bootstrap模拟框
+            $('.modal').modal();
+            // 把后台数据代入=获取文本框后台数据代入
+            $('.modal-body p').html(response.msg)
+          }
         }
       });
     }
   })
-
-})
+});
